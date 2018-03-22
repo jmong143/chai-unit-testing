@@ -1,0 +1,42 @@
+<h3>GET DATA USING PROMISE IMPLEMENTATION</h3>
+
+<hr/>
+<div id="content"></div>
+<script>
+    function promiseImp101(method, url){
+        return new Promise(function(resolve, reject){
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url)
+            xhr.onload = function(){
+                if(this.status == 200){
+                    resolve(this.response)
+                }else{
+                    reject({status: this.status, statusText : this.statusText});
+                }
+            }
+            xhr.onerror = function(){
+                reject({status: this.status, statusText : this.statusText});
+            }
+            xhr.send();
+        })
+    }
+
+    promiseImp101('GET', 'http://localhost:3000/book').then(function(response){
+        var result = JSON.parse(response);
+        if(result.message == "success"){
+            var output = '';
+            for(let user of result.users){
+                output += `
+                    <p>ID: ${user['_id']}</p>
+                    <p>Title: ${user['title']}</p>
+                    <p>Author: ${user['author']}</p>
+                    <hr/>
+                `
+            }
+            console.log(output)
+            document.getElementById('content').innerHTML = output;
+        }
+    }).catch(function(err){
+        console.log(err)
+    });
+</script>
